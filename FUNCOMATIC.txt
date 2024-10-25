@@ -1,0 +1,70 @@
+Library Name -> BIOME:
+  B: Bioimpedance
+  I: Integrated 
+  O: Optimization (and) 
+  M: Multi-signal
+  E: Enhancement
+  
+  
+Data Object Tree:
+matlabDataBase
+|_ subject
+   |_ date
+      |_ setup (trial)
+         |_ phase_02 "B L"
+         |_ phase_03 "VAL"
+         |_ phase_04 "REC"
+         |_ phase_05 "H G"
+         |_ phase_06 "REC"
+         |_ phase_07 "C P"
+         |_ phase_08 "REC"
+
+
+Need to Know:
+   *: Most object and function names are written in camel case (Ex. objectAndFunction).
+  **: Some variables or arrays may be written in snake case for more clarity (Ex. acc_tim, ch1_del, etc).
+
+BIOME -> FILE:
+  1: [08/15/2024 - ind - FD] dirSweep(directory) -> returns "Sub directory content"
+  2: [08/15/2024 - ind - FD] loadArgs(directory) -> returns "Hyper parameters"
+  3: [08/15/2024 - ind - FD] floadMat(directory) -> returns "The '.mat' file under that directory"
+  4: [08/15/2024 - ind - FD] floadCSV(directory) -> returns "The '.csv' file under that directory"
+  5: [08/15/2024 - dep - FD] loadData(args, directory) -> return "The full-length data packet object for a single trial + success log"
+    5.1: Takes arguments for phase discription
+    5.2: Takes directory of the trial
+  6: [08/15/2024 - dep - OG] parseDat(mat, csv) -> returns "An object of necessary data extracted from mat file and csv file"
+    6.1: Returns an object compatible with our use.
+    6.2: Object is a collective combination of both mat and csv.
+  7: [08/16/2024 - dep] loadStUp(directory) -> returns "All trials within a specific date"
+  8: [08/16/2024 - dep] loadDate(directory) -> returns "All dates under a specific subject"
+    8.1: Not to be mistaken with 'loadData'.
+    8.2: For subjects with a single date of visit, basically passes the directory only.
+  9: [08/16/2024 - dep] loadSubj(directory) -> returns "Goes over all subjects and creates files"
+  
+BIOME -> PROCESS:
+  1: [08/16/2024 - ind - OG] segments(amp, tim) -> returns "Characteristic points for segments"
+    1.1: max_slope: max slope point
+    1.2: max_crest: maximum bioz point
+    1.3: min_crest: minimum bioz point
+  2: [08/16/2024 - ind] offAlign(amp*, tim*) -> returns "Returns alignment offset"
+    2.1: * means for both BioZ and Finapers
+    2.2: The entire setup data is used to avoid overlaps.
+  3: [08/17/2024 - dep] morphFil(beat) -> returns "quality boolean"
+    3.1: Q - True means beat is clean.
+    3.2: Q - False means beat is noisy.
+  4: [08/18/2024 - dep] qMetrics(IBI*) -> returns "trial level quality boolean, based on alignment"
+    4.1: * means IBI for both BioZ and Finapres.
+    4.2: Quality metric for the entire trial.
+  5: [08/18/2024 - dep] regenBWF(waveform) -> returns "regenerated BioZ, denoised, and filtered"
+  6: [08/18/2024 - dep] augWfSeg(waveform) -> returns "segmentation based on autocorrelation"
+  
+BIOME -> ANALYTICS:
+  1: [08/19/2024 - dep] baseline(dataDirectory, method) -> returns "results for baseline models" (Og.)
+    1.1: Vanilla Regression.
+    1.2: XGB, LGM, RocketBoost, etc. (Decision Trees)
+    1.3: Vanilla NN.
+    1.4: SVM.
+  2: [08/19/2024 - dep] espBiome(dataDirectory) -> returns "results for our methods" (Og.)
+
+BIOME -> VISUALS:
+  1: [08/xx/2024 - dep] visBiome(dataFrame) -> returns "visuals tools for interpretation"

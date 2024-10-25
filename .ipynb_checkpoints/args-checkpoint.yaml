@@ -1,0 +1,6 @@
+{
+  "generic": {
+    "inpDir": "/esplabdata/yaleBiozData", "inpFolder": "matlabDataBase",
+    "outDir": "/esplabdata/yaleBiozData", "outFolder": "pythonDataBase",
+  }
+}
