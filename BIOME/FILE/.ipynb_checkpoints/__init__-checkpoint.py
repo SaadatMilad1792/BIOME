@@ -5,3 +5,6 @@ from .dirSweep import *
 from .fLoadArg import *
 from .fLoadMat import *
 from .fLoadCSV import *
+from .parseDat import *
+from .loadData import *
+from .loadStUp import *

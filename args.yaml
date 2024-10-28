@@ -2,5 +2,27 @@
   "generic": {
     "inpDir": "/esplabdata/yaleBiozData", "inpFolder": "matlabDataBase",
     "outDir": "/esplabdata/yaleBiozData", "outFolder": "pythonDataBase",
-  }
+    "outPkl": "globalDataFrame",
+    "initialSeed": 42, "projectName": "yaleBiozProject",
+    "phaseDescription": {
+      "1": "BIO - Z Sensors Placement (3 mins)",
+      "2": "BIO - Z Calibration (3 mins)",
+      "3": "Valsalva Maneuver (1 min)",
+      "4": "Recovery After Valsalva Maneuver (3 mins)",
+      "5": "Hand Grip Test (2 mins)",
+      "6": "Recovery After Hand Grip Test (3 mins)",
+      "7": "Cold Pressor Test (2 mins)",
+      "8": "Recovery After Cold Pressor Test (3 mins)",
+    },       
+  },
+    
+  "process": {
+    "parseDat": {
+      "resampleRate": 128, "resampleActive": True,
+    },
+    "loadStUp": {
+      "subjectList": "All",
+    },
+  },
+  
 }

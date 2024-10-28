@@ -1,0 +1,92 @@
+#######################################################################################################################
+## -- necessary libraries -- ##########################################################################################
+#######################################################################################################################
+import numpy as np
+from ..FILE import *
+from ..PROCESS import *
+
+import matplotlib.pyplot as plt
+#######################################################################################################################
+## -- detects the plausible location of the maneuver on the waveform -- ###############################################
+#######################################################################################################################
+def proxyLoc(args, directory):
+  
+  trialDataPackage, log = loadData(args, directory)
+  finData, bioData = trialDataPackage["finData"], trialDataPackage["bioData"]
+  reFinTim, reFinSbp, reFinDbp = finData["re_tim"], finData["re_sys"], finData["re_dia"]
+  fiFinTim, fiFinSbp, fiFinDbp = finData["fi_tim"], finData["fi_sys"], finData["fi_dia"]
+  phList, reFinTimeSpan = list(bioData.keys()), reFinTim[-1] - reFinTim[0]
+  
+  calClusterCount, calClusters = calClust(reFinSbp, mode = "cal")
+  sigClusterCount, sigClusters = calClust(reFinSbp, mode = "sig")
+  
+  maneuverBundles = []
+  maneuverBundles.append([x for x in phList if any(y in x for y in ["02", "03", "04"])])
+  maneuverBundles.append([x for x in phList if any(y in x for y in ["05", "06"])])
+  maneuverBundles.append([x for x in phList if any(y in x for y in ["07", "08"])])
+  
+  if calClusterCount == 3:
+      
+    sigClusters = sigClusters[-3:]
+    for sig in range(len(sigClusters) - 1, -1, -1):
+
+      timeSpan = []
+      for ph in range(len(maneuverBundles[sig])):
+        time = bioData[maneuverBundles[sig][ph]]["data"]["channel1"]["tim"]
+        timeSpan.append(time[-1][-1] - time[0][0])
+
+      for ph in range(len(maneuverBundles[sig])):
+        msTim = bioData[maneuverBundles[sig][ph]]["data"]["biozCharacteristicPoints"]["pinPoint"]["maxSlope"]["tim"]
+        try:
+          lower = reFinTim[sigClusters[sig]][0] + np.sum(timeSpan[:ph])
+          upper = reFinTim[sigClusters[sig]][-1] - np.sum(timeSpan[ph:])
+          offset, metric = datAlign(reFinTim[sigClusters[sig]], reFinSbp[sigClusters[sig]], msTim, lower, upper)
+          offset = offset + sigClusters[sig][0]
+          trialDataPackage["bioData"][maneuverBundles[sig][ph]]["prep"] = "Calibrated"
+        
+        except:
+          offset, metric = datAlign(reFinTim, reFinSbp, msTim)
+          trialDataPackage["bioData"][maneuverBundles[sig][ph]]["prep"] = "UnstableCalibration"
+        
+        reTimLabel, fiTimLabel = reFinTim[offset:(offset + len(msTim) - 1)], fiFinTim[offset:(offset + len(msTim) - 1)]
+        reSbpLabel, fiSbpLabel = reFinSbp[offset:(offset + len(msTim) - 1)], fiFinSbp[offset:(offset + len(msTim) - 1)]
+        reDbpLabel, fiDbpLabel = reFinDbp[offset:(offset + len(msTim) - 1)], fiFinDbp[offset:(offset + len(msTim) - 1)]
+        
+        trialDataPackage["bioData"][maneuverBundles[sig][ph]]["calQ"] = calClusterCount
+        trialDataPackage["bioData"][maneuverBundles[sig][ph]]["wfqm"] = metric
+        trialDataPackage["bioData"][maneuverBundles[sig][ph]]["fina"] = {
+          "fpAdcVal": finData["fp_adc_val"],
+          "fpAdcTim": finData["fp_adc_tim"],
+          "reTim": reTimLabel, "fiTim": fiTimLabel,
+          "reSbp": reSbpLabel, "fiSbp": fiSbpLabel,
+          "reDbp": reDbpLabel, "fiDbp": fiDbpLabel,
+        }
+        
+         
+  else:
+    
+    timeSpan = []
+    for ph in range(len(phList)):
+      time = bioData[phList[ph]]["data"]["channel1"]["tim"]
+      timeSpan.append(time[-1][-1] - time[0][0])
+        
+    for ph in range(len(phList)):
+      msTim = bioData[phList[ph]]["data"]["biozCharacteristicPoints"]["pinPoint"]["maxSlope"]["tim"]
+      offset, metric = datAlign(reFinTim, reFinSbp, msTim)
+      reTimLabel, fiTimLabel = reFinTim[offset:(offset + len(msTim) - 1)], fiFinTim[offset:(offset + len(msTim) - 1)]
+      reSbpLabel, fiSbpLabel = reFinSbp[offset:(offset + len(msTim) - 1)], fiFinSbp[offset:(offset + len(msTim) - 1)]
+      reDbpLabel, fiDbpLabel = reFinDbp[offset:(offset + len(msTim) - 1)], fiFinDbp[offset:(offset + len(msTim) - 1)]
+
+      trialDataPackage["bioData"][phList[ph]]["fina"] = {
+        "fpAdcVal": finData["fp_adc_val"],
+        "fpAdcTim": finData["fp_adc_tim"],
+        "reTim": reTimLabel, "fiTim": fiTimLabel,
+        "reSbp": reSbpLabel, "fiSbp": fiSbpLabel,
+        "reDbp": reDbpLabel, "fiDbp": fiDbpLabel,
+      }
+      trialDataPackage["bioData"][phList[ph]]["calQ"] = calClusterCount
+      trialDataPackage["bioData"][phList[ph]]["wfqm"] = metric
+      trialDataPackage["bioData"][phList[ph]]["prep"] = "Uncalibrated"
+      
+  return trialDataPackage["bioData"], log
+  
