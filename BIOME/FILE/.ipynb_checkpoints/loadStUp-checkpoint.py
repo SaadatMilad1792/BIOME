@@ -36,7 +36,8 @@ def loadStUp(args):
       for trialId, trial in enumerate(trialList):
         
         inpDirectory = trialDir + "/" + trial
-        trialDataPackage, log = proxyLoc(args, inpDirectory)
+        trialDataPackage, finapresRaw, log = proxyLoc(args, inpDirectory)
+        reFinTim, reFinSbp, reFinDbp = finapresRaw[0][0], finapresRaw[0][1], finapresRaw[0][2]
         for phaseId, phase in enumerate(trialDataPackage):
           
           data = trialDataPackage[phase]["data"]
@@ -45,7 +46,6 @@ def loadStUp(args):
           calQ = trialDataPackage[phase]["calQ"]
           wfqm = trialDataPackage[phase]["wfqm"]
           prep = trialDataPackage[phase]["prep"]
-          
           
           demo = demographic[demographic["pID"].str.upper() == subject.upper()]
           numCycle = data["biozCharacteristicPoints"]["numCycle"]
@@ -92,6 +92,9 @@ def loadStUp(args):
                 "tim": data["accmeter"]["tim"][cyc] + shift,
               },
               "fin": {
+                "fp_tim": reFinTim,
+                "fp_sys": reFinSbp,
+                "fp_dia": reFinDbp,
                 "re_tim": fina["reTim"][cyc],
                 "re_sys": fina["reSbp"][cyc],
                 "re_dia": fina["reDbp"][cyc],

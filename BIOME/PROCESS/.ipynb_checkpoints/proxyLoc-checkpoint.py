@@ -1,6 +1,7 @@
 #######################################################################################################################
 ## -- necessary libraries -- ##########################################################################################
 #######################################################################################################################
+import copy
 import numpy as np
 from ..FILE import *
 from ..PROCESS import *
@@ -16,6 +17,9 @@ def proxyLoc(args, directory):
   reFinTim, reFinSbp, reFinDbp = finData["re_tim"], finData["re_sys"], finData["re_dia"]
   fiFinTim, fiFinSbp, fiFinDbp = finData["fi_tim"], finData["fi_sys"], finData["fi_dia"]
   phList, reFinTimeSpan = list(bioData.keys()), reFinTim[-1] - reFinTim[0]
+  
+  rePreserve = [copy.copy(reFinTim), copy.copy(reFinSbp), copy.copy(reFinDbp)]
+  fiPreserve = [copy.copy(fiFinTim), copy.copy(fiFinSbp), copy.copy(fiFinDbp)]
   
   calClusterCount, calClusters = calClust(reFinSbp, mode = "cal")
   sigClusterCount, sigClusters = calClust(reFinSbp, mode = "sig")
@@ -34,19 +38,21 @@ def proxyLoc(args, directory):
       for ph in range(len(maneuverBundles[sig])):
         time = bioData[maneuverBundles[sig][ph]]["data"]["channel1"]["tim"]
         timeSpan.append(time[-1][-1] - time[0][0])
-
+      
+      lowLim = 0
       for ph in range(len(maneuverBundles[sig])):
         msTim = bioData[maneuverBundles[sig][ph]]["data"]["biozCharacteristicPoints"]["pinPoint"]["maxSlope"]["tim"]
         try:
-          lower = reFinTim[sigClusters[sig]][0] + np.sum(timeSpan[:ph])
+          lower = max(reFinTim[sigClusters[sig]][0] + np.sum(timeSpan[:ph]), lowLim)
           upper = reFinTim[sigClusters[sig]][-1] - np.sum(timeSpan[ph:])
           offset, metric = datAlign(reFinTim[sigClusters[sig]], reFinSbp[sigClusters[sig]], msTim, lower, upper)
           offset = offset + sigClusters[sig][0]
-          trialDataPackage["bioData"][maneuverBundles[sig][ph]]["prep"] = "Calibrated"
+          lowLim = reFinTim[offset + len(msTim) - 1] - 0.1 * (reFinTim[offset + len(msTim) - 1] - reFinTim[offset])
+          trialDataPackage["bioData"][maneuverBundles[sig][ph]]["prep"] = "Cal"
         
         except:
           offset, metric = datAlign(reFinTim, reFinSbp, msTim)
-          trialDataPackage["bioData"][maneuverBundles[sig][ph]]["prep"] = "UnstableCalibration"
+          trialDataPackage["bioData"][maneuverBundles[sig][ph]]["prep"] = "Unstable"
         
         reTimLabel, fiTimLabel = reFinTim[offset:(offset + len(msTim) - 1)], fiFinTim[offset:(offset + len(msTim) - 1)]
         reSbpLabel, fiSbpLabel = reFinSbp[offset:(offset + len(msTim) - 1)], fiFinSbp[offset:(offset + len(msTim) - 1)]
@@ -86,7 +92,7 @@ def proxyLoc(args, directory):
       }
       trialDataPackage["bioData"][phList[ph]]["calQ"] = calClusterCount
       trialDataPackage["bioData"][phList[ph]]["wfqm"] = metric
-      trialDataPackage["bioData"][phList[ph]]["prep"] = "Uncalibrated"
+      trialDataPackage["bioData"][phList[ph]]["prep"] = "UnCal"
       
-  return trialDataPackage["bioData"], log
+  return trialDataPackage["bioData"], [rePreserve, fiPreserve], log
   
