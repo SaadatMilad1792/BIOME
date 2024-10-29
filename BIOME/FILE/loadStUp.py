@@ -1,12 +1,12 @@
 #######################################################################################################################
 ## -- necessary libraries -- ##########################################################################################
 #######################################################################################################################
+import sys
 import pandas as pd
 from ..FILE import *
 from ..PROCESS import *
 from ..ANALYTIC import *
 
-import sys
 #######################################################################################################################
 ## -- loads trials and dates for a subject -- #########################################################################
 #######################################################################################################################
@@ -18,12 +18,18 @@ def loadStUp(args):
   outDir, outFolder = genericArg["outDir"], genericArg["outFolder"]
   outPkl = genericArg["outPkl"]
   directory = os.path.join(inpDir, inpFolder)
-  KeepSubList = subArgsObj["subjectList"]
-  subjectList = sorted(dirSweep(directory))
+  subjectList, loadStUpActive = subArgsObj["subjectList"], subArgsObj["loadStUpActive"]
+  savePickles, savePltOverall = subArgsObj["savePickles"], subArgsObj["savePltOverall"]
+  
+  if not loadStUpActive:
+    print("Module 'loadStUp' has been marked as deactive; Activate from the arguments file.")
+    return False
+      
+  sortedSubjectList = sorted(dirSweep(directory))
   demographic = pd.read_pickle(directory + "/../" + "demographics.pkl", compression = "gzip")
-  for subId, subject in enumerate(subjectList):
+  for subId, subject in enumerate(sortedSubjectList):
     
-    if (subject not in KeepSubList) and (KeepSubList != "All"):
+    if (subject not in subjectList) and (subjectList != "All"):
       continue
     
     print(subject)
@@ -102,7 +108,7 @@ def loadStUp(args):
                 "fi_sys": fina["fiSbp"][cyc],
                 "fi_dia": fina["fiDbp"][cyc],
               },
-              "biozCharacteristicPoints": {
+              "characteristic_points": {
                 "max_crest": {
                                "val": data["biozCharacteristicPoints"]["pinPoint"]["maxCrest"]["val"][cyc],
                                "tim": data["biozCharacteristicPoints"]["pinPoint"]["maxCrest"]["tim"][cyc] + shift,
@@ -119,6 +125,11 @@ def loadStUp(args):
             }]))
             
   rowKeepList = pd.concat(rowKeepList).reset_index(drop = True)
-  analytic(args, rowKeepList)
-  rowKeepList.to_pickle(os.path.join(outDir, outFolder, f"{outPkl}.pkl.gz"), compression = "gzip")
+  
+  if savePltOverall:
+    analytic(args, rowKeepList)
+  
+  if savePickles:
+    rowKeepList.to_pickle(os.path.join(outDir, outFolder, f"{outPkl}.pkl.gz"), compression = "gzip")
+    
   return rowKeepList

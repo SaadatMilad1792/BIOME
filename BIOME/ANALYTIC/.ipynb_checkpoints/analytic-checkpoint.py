@@ -54,7 +54,7 @@ def dataQualVis(args, df, subject):
           ax[0, i].axvline(x = calTimes[0], color = "black", linestyle = "--", linewidth = 1.5)
           ax[0, i].axvline(x = calTimes[-1], color = "black", linestyle = "--", linewidth = 1.5)
       
-      ax[0, i].plot(g_tim, g_mag, label = f"{p}, {CPD}")
+      ax[0, i].plot(g_tim, g_mag, label = f"{df[(df['trial'] == t) & (df['phase'] == p)]['prep'].unique()[0]}, {p}, {CPD}")
       Quality = df[df["trial"] == t]["prep"].unique()
       ax[0, i].set_title(f"Trial: {t}, Quality: {Quality}", fontsize = 20)
       ax[0, i].set_xlabel("Time (s)", fontsize = 12)
@@ -83,7 +83,7 @@ def dataQualVis(args, df, subject):
           ax[1, i].axvline(x = calTimes[0], color = "black", linestyle = "--", linewidth = 1.5)
           ax[1, i].axvline(x = calTimes[-1], color = "black", linestyle = "--", linewidth = 1.5)
       
-      ax[1, i].plot(g_tim, g_mag, label = f"{p}, {CPD}")
+      ax[1, i].plot(g_tim, g_mag, label = f"{df[(df['trial'] == t) & (df['phase'] == p)]['prep'].unique()[0]}, {p}, {CPD}")
       Quality = df[df["trial"] == t]["prep"].unique()
       ax[1, i].set_title(f"Trial: {t}, Quality: {Quality}", fontsize = 20)
       ax[1, i].set_xlabel("Time (s)", fontsize = 12)
@@ -112,7 +112,7 @@ def dataQualVis(args, df, subject):
           ax[2, i].axvline(x = calTimes[0], color = "black", linestyle = "--", linewidth = 1.5)
           ax[2, i].axvline(x = calTimes[-1], color = "black", linestyle = "--", linewidth = 1.5)
       
-      ax[2, i].plot(g_tim, g_mag, label = f"{p} SBP, {CPD}")
+      ax[2, i].plot(g_tim, g_mag, label = f"{df[(df['trial'] == t) & (df['phase'] == p)]['prep'].unique()[0]}, {p} SBP, {CPD}")
       Quality = df[df["trial"] == t]["prep"].unique()
       ax[2, i].set_title(f"Trial: {t}, Quality: {Quality}", fontsize = 20)
       ax[2, i].set_xlabel("Time (s)", fontsize = 12)
@@ -142,7 +142,7 @@ def dataQualVis(args, df, subject):
           ax[3, i].axvline(x = calTimes[0], color = "black", linestyle = "--", linewidth = 1.5)
           ax[3, i].axvline(x = calTimes[-1], color = "black", linestyle = "--", linewidth = 1.5)
 
-      ax[3, i].plot(g_tim, g_mag, label = f"{p} DBP, {CPD}")
+      ax[3, i].plot(g_tim, g_mag, label = f"{df[(df['trial'] == t) & (df['phase'] == p)]['prep'].unique()[0]}, {p} DBP, {CPD}")
       Quality = df[df["trial"] == t]["prep"].unique()
       ax[3, i].set_title(f"Trial: {t}, Quality: {Quality}", fontsize = 20)
       ax[3, i].set_xlabel("Time (s)", fontsize = 12)
@@ -172,7 +172,7 @@ def dataQualVis(args, df, subject):
           ax[4, i].axvline(x = calTimes[0], color = "black", linestyle = "--", linewidth = 1.5)
           ax[4, i].axvline(x = calTimes[-1], color = "black", linestyle = "--", linewidth = 1.5)
       
-      ax[4, i].plot(g_tim, g_mag, label = f"{p}, {CPD}")
+      ax[4, i].plot(g_tim, g_mag, label = f"{df[(df['trial'] == t) & (df['phase'] == p)]['prep'].unique()[0]}, {p}, {CPD}")
       Quality = df[df["trial"] == t]["prep"].unique()
       ax[4, i].set_title(f"Trial: {t}, Quality: {Quality}", fontsize = 20)
       ax[4, i].set_xlabel("Time (s)", fontsize = 12)
@@ -201,7 +201,7 @@ def dataQualVis(args, df, subject):
           ax[5, i].axvline(x = calTimes[0], color = "black", linestyle = "--", linewidth = 1.5)
           ax[5, i].axvline(x = calTimes[-1], color = "black", linestyle = "--", linewidth = 1.5)
       
-      ax[5, i].plot(g_tim, g_mag, label = f"{p}, {CPD}")
+      ax[5, i].plot(g_tim, g_mag, label = f"{df[(df['trial'] == t) & (df['phase'] == p)]['prep'].unique()[0]}, {p}, {CPD}")
       Quality = df[df["trial"] == t]["prep"].unique()
       ax[5, i].set_title(f"Trial: {t}, Quality: {Quality}", fontsize = 20)
       ax[5, i].set_xlabel("Time (s)", fontsize = 12)

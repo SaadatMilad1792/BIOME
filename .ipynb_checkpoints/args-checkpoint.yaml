@@ -21,7 +21,8 @@
       "resampleRate": 128, "resampleActive": True,
     },
     "loadStUp": {
-      "subjectList": "All",
+      "subjectList": "All", "loadStUpActive": True,
+      "savePickles": True , "savePltOverall": True,
     },
   },
   
