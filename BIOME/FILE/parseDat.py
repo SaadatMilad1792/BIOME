@@ -118,6 +118,12 @@ def parseDat(args, bioData, accData):
     "zax": acc_zax,
     "mag": acc_mag,
   }
+
+  ## -- finapres raw adc waveform (finapres) -- ##
+  finaWave = {
+    "fp_adc_val": fp_abp_adc,
+    "fp_adc_tim": fp_abp_tim,
+  }
   
   ## -- creating data dictionaries (finapres) -- ##
   finapres = {
@@ -134,6 +140,7 @@ def parseDat(args, bioData, accData):
   ## -- creating data object package (data) -- ##
   dataObjectPackage = {
     "ppgData": ppgData,
+    "finaWave": finaWave,
     "channel1": channel1,
     "channel2": channel2,
     "accmeter": accelerometer,

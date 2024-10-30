@@ -21,8 +21,9 @@
       "resampleRate": 128, "resampleActive": True,
     },
     "loadStUp": {
-      "subjectList": "All", "loadStUpActive": True,
-      "savePickles": True , "savePltOverall": True,
+      "subjectList": "All", "loadStUpActive": False,
+      "savePickles": False, "savePltOverall": False,
+      "maxCpuCount":     8, "parallelActive":  True,
     },
   },
   

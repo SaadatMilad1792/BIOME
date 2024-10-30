@@ -8,17 +8,28 @@ import sys
 import pickle
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from ..PROCESS import *
+import matplotlib.pyplot as plt
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 #######################################################################################################################
 ## -- 2. data frame quality visual module -- ##########################################################################
 #######################################################################################################################
 def analytic(args, df):
-  uniqueSub = list(df["subject"].unique())
-  for sub in uniqueSub:
-    dataQualVis(args, df[df["subject"] == sub], sub)
   
+  processArg, genericArg = args["process"]["loadStUp"], args["generic"]
+  maxCpuCount, parallelActive = processArg["maxCpuCount"], processArg["parallelActive"]
+  maxCpuCount = None if not parallelActive else maxCpuCount
+  
+  uniqueSub = list(df["subject"].unique())
+
+  with ProcessPoolExecutor(max_workers = maxCpuCount) as executor:
+    futures = {executor.submit(dataQualVis, args, df[df["subject"] == sub], sub): sub for sub in uniqueSub}
+
+    for future in as_completed(futures):
+      subject = futures[future]
+      result = future.result()
+
   return "Task Completed!"
 
 #######################################################################################################################
@@ -210,7 +221,8 @@ def dataQualVis(args, df, subject):
       ax[5, i].grid(True)
 
   plt.tight_layout()
-  os.makedirs("./Analytics", exist_ok = True)
-  plt.savefig(f"./Analytics/SUBJECT_{subject}_OVERALL.png")
+  os.makedirs(f"./Reports", exist_ok = True)
+  os.makedirs(f"./Reports/wfAnalytics", exist_ok = True)
+  plt.savefig(f"./Reports/wfAnalytics/SUBJECT_{subject}_OVERALL.png")
   plt.close()
   # plt.show()

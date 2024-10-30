@@ -50,4 +50,5 @@ def loadData(args, directory):
     "bioData": trialDataPackage,
     "finData": finapres,
   }
+  
   return trialDataPackage, log
