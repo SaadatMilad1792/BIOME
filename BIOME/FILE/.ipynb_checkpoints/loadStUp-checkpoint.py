@@ -121,6 +121,7 @@ def loadStUp(args):
     print("Module 'loadStUp' has been marked as deactive; Activate from the arguments file.")
     return False
 
+  print(f"Using Maximum of {maxCpuCount if maxCpuCount else 'Default'} CPUs.")
   demographic = pd.read_pickle(os.path.join(directory, "../", "demographics.pkl"), compression="gzip")
   sortedSubjectList = sorted(dirSweep(directory))
   

@@ -47,8 +47,17 @@ def datAlign(re_tim, re_tgt, ms_tim, lower = None, upper = None):
       true_tmp_IBI = np.delete(true_tmp_IBI, mask)
       bioz_tmp_IBI = np.delete(bioz_tmp_IBI, mask)
 
-      e_rmse = np.mean(np.abs(np.subtract(bioz_tmp_IBI, true_tmp_IBI)))
-      p_corr = np.corrcoef(bioz_tmp_IBI, true_tmp_IBI)[0, 1]
-      s_corr, _ = spearmanr(bioz_tmp_IBI, true_tmp_IBI)
+      try:
+        bioz_tmp_IBI_smooth = np.convolve(bioz_tmp_IBI, np.ones(10) / 10, mode = 'valid')
+        true_tmp_IBI_smooth = np.convolve(true_tmp_IBI, np.ones(10) / 10, mode = 'valid')
+
+        e_rmse = np.mean(np.abs(np.subtract(bioz_tmp_IBI_smooth, true_tmp_IBI_smooth)))
+        p_corr = np.corrcoef(bioz_tmp_IBI_smooth, true_tmp_IBI_smooth)[0, 1]
+        s_corr, _ = spearmanr(bioz_tmp_IBI_smooth, true_tmp_IBI_smooth)
+        
+      except:
+        e_rmse = np.mean(np.abs(np.subtract(bioz_tmp_IBI, true_tmp_IBI)))
+        p_corr = np.corrcoef(bioz_tmp_IBI, true_tmp_IBI)[0, 1]
+        s_corr, _ = spearmanr(bioz_tmp_IBI, true_tmp_IBI)
 
   return offset, (e_rmse, p_corr, s_corr)

@@ -23,7 +23,7 @@
     "loadStUp": {
       "subjectList": "All", "loadStUpActive": False,
       "savePickles": False, "savePltOverall": False,
-      "maxCpuCount":     8, "parallelActive":  True,
+      "maxCpuCount":    12, "parallelActive":  True,
     },
   },
   
