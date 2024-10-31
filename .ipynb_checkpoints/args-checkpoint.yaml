@@ -27,4 +27,18 @@
     },
   },
   
+  "mapping": {
+    "qFilters": {
+      "rThreshold": 0.02, "pThreshold": 0.70, "sThreshold": 0.70, 
+      "finCalStat": "CS", "filterStUp": "a|b|c",
+    },
+    
+    "phyAware": {
+      "subjectList": "All", "phyAwareActive": False,
+      "savePytorch": False, "saveReportLogs": False,
+      "maxCpuCount":    12, "parallelActive":  True,
+      "valSetRatio":  0.20, "phyAwareDevice": "cuda:9",
+    },
+  },
+  
 }

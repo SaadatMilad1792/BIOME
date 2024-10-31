@@ -106,6 +106,7 @@ def parallel(args, trialDir, trial, demographic, subject, date, shift, genericAr
 ## -- loads trials and dates for a subject -- #########################################################################
 #######################################################################################################################
 def loadStUp(args):
+  
   rowKeepList = []
   processArg, genericArg = args["process"]["loadStUp"], args["generic"]
   inpDir, inpFolder = genericArg["inpDir"], genericArg["inpFolder"]
