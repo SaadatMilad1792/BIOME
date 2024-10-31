@@ -36,8 +36,6 @@ class ComplexCNN(nn.Module):
   def forward(self, x):
     # First convolutional block
     x = self.pool(torch.relu(self.bn1(self.conv1(x))))
-    x = self.pool(torch.relu(self.bn2(self.conv2(x))))
-    x = self.pool(torch.relu(self.bn3(self.conv3(x))))
     x = x.view(x.size(0), -1)
 
     # Fully connected layers with dropout
