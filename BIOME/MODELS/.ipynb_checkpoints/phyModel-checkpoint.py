@@ -26,7 +26,7 @@ class ComplexCNN(nn.Module):
     self.db2 = nn.Linear(64, 64)
     self.db3 = nn.Linear(64, 1)
     
-    self.sb1 = nn.Linear(512, 64)
+    self.sb1 = nn.Linear(128, 64)
     self.sb2 = nn.Linear(64, 64)
     self.sb3 = nn.Linear(64, 1)
 

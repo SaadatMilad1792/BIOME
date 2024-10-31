@@ -1,6 +1,6 @@
 nohup: ignoring input
 Module 'loadStUp' has been marked as deactive; Activate from the arguments file.
-Physiology: ['ph02', 'ph03', 'ph04'] |  trSize: 28413 |  vaSize: 4609 |  teSize: 730 |  Device: cuda:9
+Physiology: ['ph02', 'ph03', 'ph04'] |  trSize: 30248 |  vaSize: 2774 |  teSize: 730 |  Device: cuda:9
 subject P003, phase bundle ['ph02', 'ph03', 'ph04'], started.
 Total Trainable Parameters: 345122
 Traceback (most recent call last):
@@ -8,12 +8,14 @@ Traceback (most recent call last):
     BIOME.phyAware(args)
   File "/home/grads/m/m.saadat/BIOME/BIOME/MODELS/phyAware.py", line 87, in phyAware
     model.train_model(subject, ph, genericArg["initialSeed"], trLoader, vaLoader, teLoader, num_epochs=500, learning_rate=1e-4, device = phyAwareDevice)
-  File "/home/grads/m/m.saadat/BIOME/BIOME/MODELS/phyModel.py", line 98, in train_model
+  File "/home/grads/m/m.saadat/BIOME/BIOME/MODELS/phyModel.py", line 96, in train_model
     outputs = self(inputs)
   File "/home/grads/m/m.saadat/miniconda3/envs/Env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
     return forward_call(*input, **kwargs)
-  File "/home/grads/m/m.saadat/BIOME/BIOME/MODELS/phyModel.py", line 39, in forward
-    x = self.pool(torch.relu(self.bn2(self.conv2(x))))
-  File "/home/grads/m/m.saadat/miniconda3/envs/Env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1185, in __getattr__
-    raise AttributeError("'{}' object has no attribute '{}'".format(
-AttributeError: 'ComplexCNN' object has no attribute 'bn2'
+  File "/home/grads/m/m.saadat/BIOME/BIOME/MODELS/phyModel.py", line 51, in forward
+    s = torch.relu(self.sb1(x))
+  File "/home/grads/m/m.saadat/miniconda3/envs/Env/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/grads/m/m.saadat/miniconda3/envs/Env/lib/python3.9/site-packages/torch/nn/modules/linear.py", line 103, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (512x128 and 512x64)
